@@ -2,4 +2,6 @@
     <string name="app_name">TodoApp</string>
     <string name="enter_new_item">Enter a new item</string>
     <string name="add_item">ADD ITEM</string>
+    <string name="title_activity_edit_item_activty">EditItemActivty</string>
+    <string name="edit_item_below">Edit item below:</string>
 </resources>

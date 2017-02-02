@@ -1,5 +1,6 @@
 package coderschool.lamtran.todoapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -20,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
 
+    private final int REQUEST_CODE = 10;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +36,17 @@ public class MainActivity extends AppCompatActivity {
         lvItems.setAdapter(itemsAdapter);
 
         setUpEvent();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            int position = data.getIntExtra("TaskPosition", -1);
+            String taskName = data.getStringExtra("TaskName");
+            items.set(position, taskName);
+            itemsAdapter.notifyDataSetChanged();
+            writeItems();
+        }
     }
 
     public void onAddItem(View v) {
@@ -52,6 +66,16 @@ public class MainActivity extends AppCompatActivity {
                 itemsAdapter.notifyDataSetChanged();
                 writeItems();
                 return true;
+            }
+        });
+
+        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, EditItemActivty.class);
+                intent.putExtra("TaskName", items.get(position));
+                intent.putExtra("TaskPosition", position);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
     }
