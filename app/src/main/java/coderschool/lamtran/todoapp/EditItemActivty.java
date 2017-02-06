@@ -161,6 +161,7 @@ public class EditItemActivty extends AppCompatActivity {
                 btnSave.setVisibility(View.GONE);
                 btnChangeDate.setVisibility(View.GONE);
                 etTaskName.setFocusable(false);
+                getSupportActionBar().setTitle(task.name);
                 break;
         }
     }
