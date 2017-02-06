@@ -4,4 +4,12 @@
     <string name="add_item">ADD ITEM</string>
     <string name="title_activity_edit_item_activty">EditItemActivty</string>
     <string name="edit_item_below">Edit item below:</string>
+
+    <string name="task_name">Task Name</string>
+    <string name="hint_task_name">Fill task name</string>
+    <string name="due_date">Due Date</string>
+
+    <string name="priority">Priority Level</string>
+    <string name="hint_priority">Fill Priority Level</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>

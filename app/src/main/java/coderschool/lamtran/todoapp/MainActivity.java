@@ -2,11 +2,11 @@ package coderschool.lamtran.todoapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import org.apache.commons.io.FileUtils;
@@ -15,11 +15,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import coderschool.lamtran.todoapp.Adapter.ListTaskAdapter;
+import coderschool.lamtran.todoapp.Model.TaskItem;
+import coderschool.lamtran.todoapp.Utils.TodoItemDatabase;
+
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
+
+    ArrayList<TaskItem> tasks;
+    ListTaskAdapter taskAdapter;
+
     ListView lvItems;
+    TodoItemDatabase databaseHelper;
 
     private final int REQUEST_CODE = 10;
 
@@ -29,11 +38,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Load list item when app start
-        readItems();
+        databaseHelper = TodoItemDatabase.getInstance(this);
         lvItems = (ListView) findViewById(R.id.lvItems);
+
         itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
 
-        lvItems.setAdapter(itemsAdapter);
+        tasks = databaseHelper.getAllItem();
+        taskAdapter = new ListTaskAdapter(getApplicationContext(), tasks);
+
+        lvItems.setAdapter(taskAdapter);
 
         setUpEvent();
     }
@@ -41,30 +54,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
-            int position = data.getIntExtra("TaskPosition", -1);
-            String taskName = data.getStringExtra("TaskName");
-            items.set(position, taskName);
-            itemsAdapter.notifyDataSetChanged();
-            writeItems();
+            tasks = databaseHelper.getAllItem();
+            taskAdapter.clear();
+            taskAdapter.addAll(tasks);
+            taskAdapter.notifyDataSetChanged();
         }
     }
 
-    public void onAddItem(View v) {
-        EditText etNewItems = (EditText) findViewById(R.id.etNewItem);
-
-        String itemText = etNewItems.getText().toString();
-        itemsAdapter.add(itemText);
-        etNewItems.setText("");
-        writeItems();
-    }
 
     private void setUpEvent() {
         lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                items.remove(position);
-                itemsAdapter.notifyDataSetChanged();
-                writeItems();
+                databaseHelper.removeTask(taskAdapter.getItem(position));
+                taskAdapter.remove(taskAdapter.getItem(position));
+                taskAdapter.notifyDataSetChanged();
                 return true;
             }
         });
@@ -73,8 +77,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(MainActivity.this, EditItemActivty.class);
-                intent.putExtra("TaskName", items.get(position));
-                intent.putExtra("TaskPosition", position);
+                intent.setAction("ViewTask");
+                intent.putExtra("TaskID", taskAdapter.getItem(position).id);
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        });
+
+        FloatingActionButton addButton = (FloatingActionButton) findViewById(R.id.floatingAddButton);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, EditItemActivty.class);
+                intent.setAction("AddTask");
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
