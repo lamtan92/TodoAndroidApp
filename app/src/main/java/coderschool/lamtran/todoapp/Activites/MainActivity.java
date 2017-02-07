@@ -8,13 +8,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import coderschool.lamtran.todoapp.Adapter.ListTaskAdapter;
@@ -23,9 +18,6 @@ import coderschool.lamtran.todoapp.R;
 import coderschool.lamtran.todoapp.Utils.DatabaseHelper;
 
 public class MainActivity extends AppCompatActivity {
-
-    ArrayList<String> items;
-    ArrayAdapter<String> itemsAdapter;
 
     ArrayList<TaskItem> tasks;
     ListTaskAdapter taskAdapter;
@@ -115,27 +107,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // Read item from file
-    private void readItems() {
-        File fileDir = getFilesDir();
-        File todoFile = new File(fileDir, "todo.txt");
-
-        try {
-            items = new ArrayList<>(FileUtils.readLines(todoFile));
-        } catch (IOException e) {
-            items = new ArrayList<>();
-        }
-    }
-
-    //Write item to File
-    private void writeItems() {
-        File fileDir = getFilesDir();
-        File todoFile = new File(fileDir, "todo.txt");
-
-        try {
-            FileUtils.writeLines(todoFile, items);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

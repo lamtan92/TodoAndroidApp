@@ -3,6 +3,7 @@ package coderschool.lamtran.todoapp.Adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +28,12 @@ public class ListTaskAdapter extends ArrayAdapter<TaskItem> {
     }
 
     ArrayList<TaskItem> arrTask;
-
+    Context mContext;
     public ListTaskAdapter(Context context, ArrayList<TaskItem> tasks) {
         super(context, 0, tasks);
 
         arrTask = tasks;
+        mContext = context;
     }
 
     @Nullable
@@ -64,7 +66,22 @@ public class ListTaskAdapter extends ArrayAdapter<TaskItem> {
         }
 
         viewHolder.name.setText(task.name);
+
         viewHolder.priority.setText(Utils.getPriorityTitle(task.priority));
+
+        switch (task.priority) {
+            case 0:
+                viewHolder.priority.setTextColor(ContextCompat.getColor(mContext, R.color.colorHightPriority));
+                break;
+
+            case 1:
+                viewHolder.priority.setTextColor(ContextCompat.getColor(mContext, R.color.colorMediumPriority));
+                break;
+
+            case 2:
+                viewHolder.priority.setTextColor(ContextCompat.getColor(mContext, R.color.colorLowPriority));
+                break;
+        }
 
         return convertView;
     }
