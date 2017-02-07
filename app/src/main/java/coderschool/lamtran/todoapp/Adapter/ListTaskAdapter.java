@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import coderschool.lamtran.todoapp.Model.TaskItem;
 import coderschool.lamtran.todoapp.R;
+import coderschool.lamtran.todoapp.Utils.Utils;
 
 /**
  * Created by lamtran on 2/5/17.
@@ -63,7 +64,7 @@ public class ListTaskAdapter extends ArrayAdapter<TaskItem> {
         }
 
         viewHolder.name.setText(task.name);
-        viewHolder.priority.setText(task.dueDate);
+        viewHolder.priority.setText(Utils.getPriorityTitle(task.priority));
 
         return convertView;
     }

@@ -8,14 +8,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import coderschool.lamtran.todoapp.Model.TaskItem;
@@ -23,20 +27,21 @@ import coderschool.lamtran.todoapp.Utils.TodoItemDatabase;
 
 public class EditItemActivty extends AppCompatActivity {
 
-    private String taskName = "";
-    private int taskPosition = -1;
-
-    private EditText etTaskName, etPriority;
+    private EditText etTaskName;
 
     private TextView tvDueTask;
 
     private Button btnSave, btnChangeDate;
     private Date currentDate;
 
+    private Spinner spinnerPriority;
+    private ArrayAdapter<String> adapterPriority;
+
     TodoItemDatabase databaseHelper;
     TaskItem task;
 
     SimpleDateFormat dateFormat;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +58,17 @@ public class EditItemActivty extends AppCompatActivity {
         btnChangeDate = (Button) findViewById(R.id.btnChangeDate);
 
         etTaskName = (EditText) findViewById(R.id.etTaskName);
-//        etPriority = (EditText) findViewById(R.id.etPriority);
         tvDueTask = (TextView) findViewById(R.id.etDueDate);
+
+        List<String> listPriority = new ArrayList<>();
+        listPriority.add("HIGHT");
+        listPriority.add("MEDIUM");
+        listPriority.add("LOW");
+
+        spinnerPriority = (Spinner) findViewById(R.id.spinnerPriority);
+        adapterPriority = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listPriority);
+
+        spinnerPriority.setAdapter(adapterPriority);
 
         Intent intent = getIntent();
         String action = intent.getAction();
@@ -68,26 +82,11 @@ public class EditItemActivty extends AppCompatActivity {
                 tvDueTask.setText(dateFormat.format(currentDate));
                 break;
 
-            case "EditTask":
-                btnSave.setText("Update");
-                long taskID = intent.getLongExtra("TaskID", -1);
-
-                task = databaseHelper.getTaskByID(taskID);
-                etTaskName.setText(task.name);
-                tvDueTask.setText(task.dueDate);
-
-                try {
-                    currentDate = dateFormat.parse(task.dueDate);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                break;
-
             case "ViewTask":
                 btnSave.setText("Update");
                 btnSave.setVisibility(View.GONE);
                 btnChangeDate.setVisibility(View.GONE);
+                spinnerPriority.setEnabled(false);
                 etTaskName.setFocusable(false);
 
                 long id = intent.getLongExtra("TaskID", -1);
@@ -95,6 +94,7 @@ public class EditItemActivty extends AppCompatActivity {
                 task = databaseHelper.getTaskByID(id);
                 etTaskName.setText(task.name);
                 tvDueTask.setText(task.dueDate);
+                spinnerPriority.setSelection(task.priority);
 
                 try {
                     currentDate = dateFormat.parse(task.dueDate);
@@ -103,7 +103,6 @@ public class EditItemActivty extends AppCompatActivity {
                 }
 
                 getSupportActionBar().setTitle(task.name);
-
                 break;
         }
     }
@@ -124,6 +123,7 @@ public class EditItemActivty extends AppCompatActivity {
                 btnChangeDate.setVisibility(View.VISIBLE);
                 etTaskName.setFocusable(true);
                 etTaskName.setFocusableInTouchMode(true);
+                spinnerPriority.setEnabled(true);
                 return true;
 
             case android.R.id.home:
@@ -147,7 +147,7 @@ public class EditItemActivty extends AppCompatActivity {
 
         task.name = etTaskName.getText().toString();
         task.dueDate = tvDueTask.getText().toString();
-//                task.priority = etPriority.getText().toString();
+        task.priority = spinnerPriority.getSelectedItemPosition();
 
         switch (btnSave.getText().toString()) {
             case "Save":
@@ -162,6 +162,7 @@ public class EditItemActivty extends AppCompatActivity {
                 btnChangeDate.setVisibility(View.GONE);
                 etTaskName.setFocusable(false);
                 getSupportActionBar().setTitle(task.name);
+                spinnerPriority.setEnabled(false);
                 break;
         }
     }

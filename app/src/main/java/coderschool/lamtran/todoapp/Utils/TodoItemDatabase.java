@@ -55,6 +55,7 @@ public class TodoItemDatabase extends SQLiteOpenHelper {
             ContentValues contentValues = new ContentValues();
             contentValues.put("name", taskItem.name);
             contentValues.put("dueDate", taskItem.dueDate);
+            contentValues.put("priority", taskItem.priority);
             taskID = db.insertOrThrow("Task", null, contentValues);
             db.setTransactionSuccessful();
         } catch (Exception e) {
@@ -71,10 +72,10 @@ public class TodoItemDatabase extends SQLiteOpenHelper {
 
         db.beginTransaction();
 
-
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", taskItem.name);
         contentValues.put("dueDate", taskItem.dueDate);
+        contentValues.put("priority", taskItem.priority);
 
         db.update("Task", contentValues, "id= ?", new String[]{Long.toString(taskItem.id)});
 
@@ -93,6 +94,7 @@ public class TodoItemDatabase extends SQLiteOpenHelper {
             newTask.id = res.getInt(res.getColumnIndex("id"));
             newTask.name = res.getString(res.getColumnIndex("name"));
             newTask.dueDate = res.getString(res.getColumnIndex("dueDate"));
+            newTask.priority = res.getInt(res.getColumnIndex("priority"));
         }
 
         return newTask;
@@ -102,7 +104,7 @@ public class TodoItemDatabase extends SQLiteOpenHelper {
         ArrayList<TaskItem> arrTask = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from Task", null);
+        Cursor res = db.rawQuery("select * from Task Order By priority asc", null);
 
         try {
             if (res.moveToFirst()) {
@@ -111,7 +113,7 @@ public class TodoItemDatabase extends SQLiteOpenHelper {
                     task.id = res.getInt(res.getColumnIndex("id"));
                     task.name = res.getString(res.getColumnIndex("name"));
                     task.dueDate = res.getString(res.getColumnIndex("dueDate"));
-
+                    task.priority = res.getInt(res.getColumnIndex("priority"));
                     arrTask.add(task);
                 } while (res.moveToNext());
             }

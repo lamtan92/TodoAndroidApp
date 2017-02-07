@@ -8,5 +8,5 @@ public class TaskItem {
     public long id;
     public String name;
     public String dueDate;
-    public String priority;
+    public int priority;
 }
