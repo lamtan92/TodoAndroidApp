@@ -14,6 +14,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -150,21 +151,26 @@ public class EditItemActivty extends AppCompatActivity {
         task.dueDate = tvDueTask.getText().toString();
         task.priority = spinnerPriority.getSelectedItemPosition();
 
-        switch (btnSave.getText().toString()) {
-            case "Save":
-                databaseHelper.insertTaskItem(task);
-                setResult(RESULT_OK, null);
-                finish();
-                break;
+        if (task.name.isEmpty()) {
+            Toast.makeText(this, "Please Fill Task Name", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            switch (btnSave.getText().toString()) {
+                case "Save":
+                    databaseHelper.insertTaskItem(task);
+                    setResult(RESULT_OK, null);
+                    finish();
+                    break;
 
-            case "Update":
-                databaseHelper.updateTask(task);
-                btnSave.setVisibility(View.GONE);
-                btnChangeDate.setVisibility(View.GONE);
-                etTaskName.setFocusable(false);
-                getSupportActionBar().setTitle(task.name);
-                spinnerPriority.setEnabled(false);
-                break;
+                case "Update":
+                    databaseHelper.updateTask(task);
+                    btnSave.setVisibility(View.GONE);
+                    btnChangeDate.setVisibility(View.GONE);
+                    etTaskName.setFocusable(false);
+                    getSupportActionBar().setTitle(task.name);
+                    spinnerPriority.setEnabled(false);
+                    break;
+            }
         }
     }
 
