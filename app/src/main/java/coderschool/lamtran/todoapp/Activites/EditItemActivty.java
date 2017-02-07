@@ -1,4 +1,4 @@
-package coderschool.lamtran.todoapp;
+package coderschool.lamtran.todoapp.Activites;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Locale;
 
 import coderschool.lamtran.todoapp.Model.TaskItem;
-import coderschool.lamtran.todoapp.Utils.TodoItemDatabase;
+import coderschool.lamtran.todoapp.R;
+import coderschool.lamtran.todoapp.Utils.DatabaseHelper;
 
 public class EditItemActivty extends AppCompatActivity {
 
@@ -37,7 +38,7 @@ public class EditItemActivty extends AppCompatActivity {
     private Spinner spinnerPriority;
     private ArrayAdapter<String> adapterPriority;
 
-    TodoItemDatabase databaseHelper;
+    DatabaseHelper databaseHelper;
     TaskItem task;
 
     SimpleDateFormat dateFormat;
@@ -51,7 +52,7 @@ public class EditItemActivty extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        databaseHelper = TodoItemDatabase.getInstance(getApplicationContext());
+        databaseHelper = DatabaseHelper.getInstance(getApplicationContext());
         dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
         btnSave = (Button) findViewById(R.id.btnSave);

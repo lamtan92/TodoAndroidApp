@@ -8,14 +8,15 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="coderschool.lamtran.todoapp.EditItemActivty"
+    tools:context="coderschool.lamtran.todoapp.Activites.EditItemActivty"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="5">
+        android:weightSum="5"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/tvTaskName"
@@ -39,7 +40,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="5">
+        android:weightSum="5"
+        android:padding="10dp">
 
 
         <TextView
@@ -58,7 +60,7 @@
             android:layout_weight="3"
             android:text="@string/due_date"
             android:textSize="20sp"
-            android:textAlignment="center" />
+            android:textAlignment="textEnd" />
 
         <Button
             android:id="@+id/btnChangeDate"
@@ -72,7 +74,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="5">
+        android:weightSum="5"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/tvPriority"

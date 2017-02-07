@@ -1,8 +1,10 @@
-package coderschool.lamtran.todoapp;
+package coderschool.lamtran.todoapp.Activites;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,7 +19,8 @@ import java.util.ArrayList;
 
 import coderschool.lamtran.todoapp.Adapter.ListTaskAdapter;
 import coderschool.lamtran.todoapp.Model.TaskItem;
-import coderschool.lamtran.todoapp.Utils.TodoItemDatabase;
+import coderschool.lamtran.todoapp.R;
+import coderschool.lamtran.todoapp.Utils.DatabaseHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,9 +31,11 @@ public class MainActivity extends AppCompatActivity {
     ListTaskAdapter taskAdapter;
 
     ListView lvItems;
-    TodoItemDatabase databaseHelper;
+    DatabaseHelper databaseHelper;
 
     private final int REQUEST_CODE = 10;
+
+    public int selectedPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +43,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Load list item when app start
-        databaseHelper = TodoItemDatabase.getInstance(this);
+        databaseHelper = DatabaseHelper.getInstance(this);
         lvItems = (ListView) findViewById(R.id.lvItems);
-
-        itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
 
         tasks = databaseHelper.getAllItem();
         taskAdapter = new ListTaskAdapter(getApplicationContext(), tasks);
@@ -61,14 +64,32 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     private void setUpEvent() {
         lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                databaseHelper.removeTask(taskAdapter.getItem(position));
-                taskAdapter.remove(taskAdapter.getItem(position));
-                taskAdapter.notifyDataSetChanged();
+                selectedPosition = position;
+
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Do you want delete " + taskAdapter.getItem(position).name + " ?")
+                        .setPositiveButton("Delete",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        databaseHelper.removeTask(taskAdapter.getItem(selectedPosition));
+                                        taskAdapter.remove(taskAdapter.getItem(selectedPosition));
+                                        taskAdapter.notifyDataSetChanged();
+                                    }
+                                }
+                        )
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        dialog.dismiss();
+                                    }
+                                }
+                        )
+                        .create()
+                        .show();
                 return true;
             }
         });

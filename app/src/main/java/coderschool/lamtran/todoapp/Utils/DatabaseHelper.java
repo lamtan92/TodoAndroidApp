@@ -15,20 +15,20 @@ import coderschool.lamtran.todoapp.Model.TaskItem;
  * Created by lamtran on 2/5/17.
  */
 
-public class TodoItemDatabase extends SQLiteOpenHelper {
+public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static TodoItemDatabase sInstance;
+    private static DatabaseHelper sInstance;
     public static final String DATABASE_NAME = "TodoItem.db";
 
-    public static synchronized TodoItemDatabase getInstance(Context context) {
+    public static synchronized DatabaseHelper getInstance(Context context) {
 
         if (sInstance == null) {
-            sInstance = new TodoItemDatabase(context.getApplicationContext());
+            sInstance = new DatabaseHelper(context.getApplicationContext());
         }
         return sInstance;
     }
 
-    private TodoItemDatabase(Context context) {
+    private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
 
